@@ -49,7 +49,8 @@ class FlutterRingtonePlayer {
       if (looping != null) args['looping'] = looping;
       if (volume != null) args['volume'] = volume;
       if (asAlarm != null) args['asAlarm'] = asAlarm;
-      if (alarmNotificationMeta != null) args['alarmNotificationMeta'] = alarmNotificationMeta.toMap();
+      if (alarmNotificationMeta != null)
+        args['alarmNotificationMeta'] = alarmNotificationMeta.toMap();
 
       _channel.invokeMethod('play', args);
     } on PlatformException {}
@@ -57,25 +58,38 @@ class FlutterRingtonePlayer {
 
   /// Play default alarm sound (looping on Android)
   static Future<void> playAlarm(
-          {double volume, bool looping = true, bool asAlarm = true, AlarmNotificationMeta alarmNotificationMeta}) async =>
+          {double volume,
+          bool looping = true,
+          bool asAlarm = true,
+          AlarmNotificationMeta alarmNotificationMeta}) async =>
       play(
-          android: AndroidSounds.alarm,
-          ios: IosSounds.alarm,
-          volume: volume,
-          looping: looping,
-          asAlarm: asAlarm,
-          alarmNotificationMeta: alarmNotificationMeta,
+        android: AndroidSounds.alarm,
+        ios: IosSounds.alarm,
+        volume: volume,
+        looping: looping,
+        asAlarm: asAlarm,
+        alarmNotificationMeta: alarmNotificationMeta,
       );
 
   /// Play default notification sound
-  static Future<void> playNotification(
-          {double volume, bool looping, bool asAlarm = false}) async =>
-      play(
-          android: AndroidSounds.notification,
-          ios: IosSounds.triTone,
-          volume: volume,
-          looping: looping,
-          asAlarm: asAlarm);
+  static Future<void> playNotification({
+    double volume,
+    bool looping,
+    bool asAlarm = false,
+    AlarmNotificationMeta alarmNotificationMeta,
+  }) async {
+    if (asAlarm && alarmNotificationMeta == null) {
+      throw ('Please make sure pass-in the alarmNotificationMeta value when asAlerm value is true');
+    }
+    play(
+      android: AndroidSounds.notification,
+      ios: IosSounds.triTone,
+      volume: volume,
+      looping: looping,
+      asAlarm: asAlarm,
+      alarmNotificationMeta: alarmNotificationMeta,
+    );
+  }
 
   /// Play default system ringtone (looping on Android)
   static Future<void> playRingtone(
